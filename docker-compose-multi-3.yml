@@ -1,0 +1,89 @@
+version: '3'
+
+services:
+  # MinIO Server NG
+  minio-server-ng:
+    image: minio/minio:latest
+    container_name: minio-server-ng
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./server-ng/data:/data
+      - ./server-ng/config:/root/.minio
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - minio-network
+
+  # MinIO Server TZ
+  minio-server-tz:
+    image: minio/minio:latest
+    container_name: minio-server-tz
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9010:9000"
+      - "9011:9001"
+    volumes:
+      - ./server-tz/data:/data
+      - ./server-tz/config:/root/.minio
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - minio-network
+
+  # MinIO Server ZM
+  minio-server-zm:
+    image: minio/minio:latest
+    container_name: minio-server-zm
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9020:9000"
+      - "9021:9001"
+    volumes:
+      - ./server-zm/data:/data
+      - ./server-zm/config:/root/.minio
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - minio-network
+
+  # Python Client container
+  minio-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: minio-client
+    volumes:
+      - ./client:/app
+    depends_on:
+      - minio-server-ng
+      - minio-server-tz
+      - minio-server-zm
+    stdin_open: true
+    tty: true
+    networks:
+      - minio-network
+
+networks:
+  minio-network:
+    driver: bridge
