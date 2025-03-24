@@ -28,8 +28,8 @@ This project sets up:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/multi-minio-operations.git
-   cd multi-minio-operations
+   https://github.com/tanyarags/Multi-Server-MinIO-Operations.git
+   cd Multi-Server-MinIO-Operations
    ```
 
 2. Create the directory structure:
@@ -49,7 +49,7 @@ This project sets up:
 
 ### Configuration
 
-Edit `client/config/minio_config.ini` to configure your MinIO servers:
+Edit `client/config/minio_config_multi.ini` to configure your MinIO servers:
 
 ```ini
 [NG]
@@ -81,7 +81,7 @@ bucket_name = demo-bucket
 To upload a file to all configured MinIO servers:
 
 ```bash
-docker exec -it minio-client /app/scripts/run_minio_ops.sh upload /app/demo_files/example.txt my-object-name.txt
+docker exec -it minio-client /app/scripts/minio-script-multi3.sh upload /app/demo_files/example.txt my-object-name.txt
 ```
 
 ### Downloading Files
@@ -89,7 +89,7 @@ docker exec -it minio-client /app/scripts/run_minio_ops.sh upload /app/demo_file
 To download a file from all configured MinIO servers:
 
 ```bash
-docker exec -it minio-client /app/scripts/run_minio_ops.sh download my-object-name.txt /app/downloads
+docker exec -it minio-client /app/scripts/minio-script-multi3.sh download my-object-name.txt /app/downloads
 ```
 
 ### Upload and Download in One Operation
@@ -97,7 +97,7 @@ docker exec -it minio-client /app/scripts/run_minio_ops.sh download my-object-na
 To both upload and download in a single operation:
 
 ```bash
-docker exec -it minio-client /app/scripts/run_minio_ops.sh both /app/demo_files/example.txt my-object-name.txt /app/downloads
+docker exec -it minio-client /app/scripts/minio-script-multi3.sh both /app/demo_files/example.txt my-object-name.txt /app/downloads
 ```
 
 ## Project Structure
@@ -107,9 +107,9 @@ docker exec -it minio-client /app/scripts/run_minio_ops.sh both /app/demo_files/
 │   ├── scripts/
 │   │   ├── minio_wrapper.py        # MinIO client wrapper class
 │   │   ├── minio_multi_server.py   # Multi-server operations
-│   │   └── run_minio_ops.sh        # Command-line script
+│   │   └── minio-script-multi3.sh  # Command-line script
 │   ├── config/
-│   │   └── minio_config.ini        # Server configurations
+│   │   └── minio_config_multi.ini  # Server configurations
 │   ├── demo_files/                 # Sample files for testing
 │   └── Dockerfile                  # Client container definition
 ├── server-ng/                      # Data and config for NG server
@@ -189,11 +189,3 @@ results = upload_to_all_servers(clients, "/path/to/file.txt", "object-name.txt")
 results = download_from_all_servers(clients, "object-name.txt", "/output/dir")
 ```
 
-## Extending the Project
-
-### Adding More Servers
-
-1. Add a new section to `minio_config.ini`:
-   ```ini
-   [NEW_SERVER]
-   endpoi
